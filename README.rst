@@ -1,6 +1,13 @@
 Social media for movie lovers
 -----------------------------
 
+Introduction
+++++++++++++
+
+This project was started as my bachelor thesis project. The idea was to create a basic social media using `Django <https://www.djangoproject.com/>`_ and since I'm addicted to movies, I have created this project for movie lovers.
+Although in the project there are several apps which focus on movies, it can be customized easily to be a fully working social media for any other needs.
+
+
 Installation
 ++++++++++++
 
