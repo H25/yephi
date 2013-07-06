@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}YePhi | Add Movie{% endblock %}
+
+{% block content %}
+
+    {% if success %}
+        <p class="alert alert-success">Total success: {{ success }}<a href="#" class="close" data-dismiss="alert-success">&times;</a></p>
+    {% endif %}
+    {% if fail %}
+        <p class="alert alert-danger">Total fail: {{ fail }}<a href="#" class="close" data-dismiss="alert-danger">&times;</a></p>
+    {% endif %}
+
+    <div class="well">
+    {% if user.is_superuser %}
+        <p>File format: "txt" with one link per line</p>
+
+        <form method="post" action="." enctype="multipart/form-data">{% csrf_token %}
+          {{ form.as_p }}
+
+          <input type="submit" value="Submit" class="btn btn-primary"  />
+          <input type="hidden" name="next" value="{{ '/movie/addlist/' }}" />
+        </form>
+    {% else %}
+        <p class="alert alert-danger">You don't have permission to view this page</p>
+    {% endif %}
+    </div>
+
+{% endblock %}

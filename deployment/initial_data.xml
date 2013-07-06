@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+ <object pk="2" model="newsfeed.feedaction">
+  <field type="CharField" name="name">and %NAME% are now friends</field>
+  <field type="IntegerField" name="point">10</field>
+ </object>
+ <object pk="1" model="newsfeed.feedaction">
+  <field type="CharField" name="name">sent a friend request to</field>
+  <field type="IntegerField" name="point">0</field>
+ </object>
+ <object pk="7" model="newsfeed.feedaction">
+  <field type="CharField" name="name">added %NAME% to favorite list</field>
+  <field type="IntegerField" name="point">10</field>
+ </object>
+ <object pk="6" model="newsfeed.feedaction">
+  <field type="CharField" name="name">voted</field>
+  <field type="IntegerField" name="point">10</field>
+ </object>
+ <object pk="5" model="newsfeed.feedaction">
+  <field type="CharField" name="name">reviewed</field>
+  <field type="IntegerField" name="point">50</field>
+ </object>
+ <object pk="4" model="newsfeed.feedaction">
+  <field type="CharField" name="name">commented on %NAME%'s profile</field>
+  <field type="IntegerField" name="point">0</field>
+ </object>
+ <object pk="3" model="newsfeed.feedaction">
+  <field type="CharField" name="name">added a movie</field>
+  <field type="IntegerField" name="point">50</field>
+ </object>
+
+ <object pk="1" model="accounts.relationshiptype">
+ <field type="CharField" name="name">Friend</field>
+</object>
+<object pk="2" model="accounts.relationshiptype">
+ <field type="CharField" name="name">Colleague</field>
+</object>
+<object pk="3" model="accounts.relationshiptype">
+ <field type="CharField" name="name">Movie buddy</field>
+</object>
+
+ <object pk="1" model="newsfeed.level">
+  <field type="IntegerField" name="points_needed">0</field>
+  <field type="CharField" name="name">Level 1</field>
+ </object>
+ <object pk="2" model="newsfeed.level">
+  <field type="IntegerField" name="points_needed">100</field>
+  <field type="CharField" name="name">Level 2</field>
+ </object>
+ <object pk="3" model="newsfeed.level">
+  <field type="IntegerField" name="points_needed">200</field>
+  <field type="CharField" name="name">Level 3</field>
+ </object>
+ <object pk="4" model="newsfeed.level">
+  <field type="IntegerField" name="points_needed">300</field>
+  <field type="CharField" name="name">Level 4</field>
+ </object>
+ <object pk="5" model="newsfeed.level">
+  <field type="IntegerField" name="points_needed">1000</field>
+  <field type="CharField" name="name">Level 10</field>
+ </object>
+</django-objects>

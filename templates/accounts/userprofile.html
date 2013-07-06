@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% load accounts_extra comments endless %}
+
+{% block title %}YePhi | {{ owner.username }}{% endblock %}
+
+{% block sidebar %}
+    <div id="sidebar" class="span2">
+    	{% if owner_profile.profile_picture %}
+        	<img src="/media/{{ owner_profile.profile_picture }}" alt="profile picture" id="profile-pic" />
+        {% else %}
+        	<img src="/media/images/default_user.png" alt="profile picture" id="profile-pic" />
+        {% endif %}
+        <div id="side-menu">
+        	{% ifequal owner user %}
+				<a href="/user/editprofile/" class="btn btn-block btn-primary">Edit Your Profile</a>
+	            <a href="/movie/add/" class="btn btn-block btn-primary">Add A Movie</a>
+	        {% else %}    
+	        	{% if user.is_authenticated %}
+					{% if owner_profile|has_relationship:user %}
+						<p class="alert alert-success">You are friends</p>
+					{% else %}
+						{% ifequal owner_profile|has_request:user 'no request' %}
+							{% ifnotequal owner user %}
+								<a href="javascript:void(0);" id="send_request_from{{ user.id }}_to{{ owner.id }}" class="js-sendRequest btn btn-block btn-primary">Add as friend</a>
+							{% endifnotequal %}
+						{% else %}
+							{% ifequal owner_profile|has_request:user 'sent request' %}
+								<p class="alert alert-success">Already sent request!</p>
+							{% else %}
+								<p class="alert">Received request.</p>
+							{% endifequal %}
+						{% endifequal %}
+					{% endif %}
+				{% endif %}
+            {% endifequal %}
+
+    		{% ifequal owner user %}
+    			{% if owner_requests %}
+    				<a href="#js-friendRequestModal" class="js-friendRequestButton btn btn-block btn-success" role="button" data-toggle="modal">Friend requests ({{ owner_requests.count }})</a>
+
+    				<div id="js-friendRequestModal" class="modal hide fade">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h3>Friend requests</h3>
+                        </div>
+                        <div class="modal-body">
+            				{% for request in owner_requests %}
+            					<div class="fr-request">
+            						<p>From: {{ request.from_user }}</p>
+            						<p>Message: {{ request.message }}</p>
+            						<a href="javascript:void(0);" class="js-acceptRequest btn btn-success" id="accept_request_from{{ request.from_user.id }}_to{{ owner.id }}">Accept friend</a>
+            					</div>
+            				{% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                        </div>
+    				</div>
+    			{% endif %}
+    		{% endifequal %}
+
+            <p>Friends ({{ owner_relationships.count }})</p>
+            {% if owner_relationships %}
+            	{% lazy_paginate 10 owner_relationships using "relpage" %}
+            	{% for rel in owner_relationships %}
+    				{% ifequal rel.from_user owner %}
+    					<a href="{{ rel.to_user.get_absolute_url }}" class="showfriend">
+    						{% if rel.to_user.get_profile.profile_picture %}
+    							<img src="/media/{{ rel.to_user.get_profile.profile_picture }}" alt="profile picture" />
+    						{% else %}
+    							<img src="/media/images/default_user.png" alt="profile picture" />
+    						{% endif %}
+    						{{ rel.to_user.username }}
+    					</a>
+    				{% else %}
+    					<a href="{{ rel.from_user.get_absolute_url }}" class="showfriend">
+    						{% if rel.from_user.get_profile.profile_picture %}
+    							<img src="/media/{{ rel.from_user.get_profile.profile_picture }}" alt="profile picture" />
+    						{% else %}
+    							<img src="/media/images/default_user.png" alt="profile picture" />
+    						{% endif %}
+    						{{ rel.from_user.username }}
+    					</a>
+    				{% endifequal %}
+    			{% endfor %}
+    			{% get_pages %}
+                <div class="pagination pagination-mini"><ul>
+                    {{ pages.previous }}{{ pages.next }}        
+                </ul></div>
+    		{% endif %}
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+	<div id="content" class="span10">
+        <div id="page-header">
+            <h1 class="name">{{ owner.username }}</h1>
+            {% if owner_profile.status %}
+                <p class="alert alert-info status">{{ owner_profile.status }}</p> 
+            {% endif %}
+        </div>
+        <div class="row-fluid">
+            <div class="span6">
+                <div class="alert alert-block alert-info">
+                    <h2>My Favorite Movies ({{ owner_favlist.count }})</h2>
+                    <div class="clearfix">
+                        {% lazy_paginate 3 owner_favlist using "favpage" %}
+                        {% for fav in owner_favlist %}
+                            <a href="{{ fav.movie.get_absolute_url }}" title="{{ fav.movie.title }} ({{ fav.movie.year }})">
+                                <img src="{{ fav.movie.poster }}" alt="yephi poster" class="fav-poster" />
+                            </a>
+                        {% endfor %}
+                    </div>
+                    {% get_pages %}
+                    <ul class="pager">
+                        {{ pages.previous }}{{ pages.next }}
+                    </ul>
+                </div>
+
+                <div class="alert alert-block alert-info">
+                    <h2>My Favorite Movie Genres ({{ owner_favgenre|length }})</h2>
+                    {% for genre in owner_favgenre %}
+                        {{ genre }}.
+                    {% endfor %}
+                </div>
+                
+                <div class="alert alert-block alert-info">
+                    <h2>I added ({{ owner_added.count }})</h2>
+                    <div class="clearfix">
+                        {% lazy_paginate 3 owner_added using "addpage" %}
+                        {% for add in owner_added %}
+                            <a href="{{ add.get_absolute_url }}" title="{{ add.title }} ({{ add.year }})">
+                                <img src="{{ add.poster }}" alt="yephi poster" class="fav-poster" />
+                            </a>
+                        {% endfor %}
+                    </div>
+                    {% get_pages %}
+                    <ul class="pager">
+                        {{ pages.previous }}{{ pages.next }}
+                    </ul>
+                </div>
+                
+                <div class="alert alert-block alert-info">
+                    <h2>I reviewed ({{ owner_reviewed|length }})</h2>
+                    <div class="clearfix">
+                        {% lazy_paginate 3 owner_reviewed using "revpage" %}
+                        {% for rev in owner_reviewed %}
+                            <a href="{{ rev.get_absolute_url }}" title="{{ rev.title }} ({{ rev.year }})">
+                                <img src="{{ rev.poster }}" alt="yephi poster" class="fav-poster" />
+                            </a>
+                        {% endfor %}
+                    </div>
+                    {% get_pages %}
+                    <ul class="pager">
+                        {{ pages.previous }}{{ pages.next }}
+                    </ul>
+                </div>
+            </div>
+
+    		<div class="span6">
+                {% ifnotequal owner user %}
+                <div class="well">
+                    <h2>Similarity</h2>
+                    {% if user.is_authenticated %}
+                        <p>{{ owner.username }} has {{ owner_profile|compare_favlist:user }} % similar taste in movies with you</p>
+
+                        <div class="progress progress-striped active">
+                            <div class="bar" style="width: {{ owner_profile|compare_favlist:user }}%;"></div>
+                        </div>
+                    {% endif %}
+                </div>
+                {% endifnotequal %}
+    			
+                <div class="well">
+                    <h2>About me</h2>
+                    <p>Email: {{ owner.email }}</p>
+                    <p>About me: {{ owner_profile.about }}</p>
+                    <p>Location: {{ owner_profile.location }}</p>
+                    <p>Voted: {{ owner_voted.count }}</p>
+                    <p>Point: {{ owner_point }}</p>
+                    <p>Level: {{ owner_level }}</p>
+                    {% ifequal owner user %}
+                        <a href="/user/editprofile/" class="btn">Edit Your Profile</a>
+                    {% endifequal %}
+                </div>
+    			
+    			<div class="well">
+                    <h2>Comments</h2>
+                    {% if user.is_authenticated %}
+                    {% get_comment_form for owner_profile as comment_form %}
+                        <form id="comment_{{ user.id }}_{{ owner.id }}" class=" js-submitCommentForm" action="{% comment_form_target %}" method="post">{% csrf_token %}
+                            {{ comment_form.content_type }}
+                            {{ comment_form.object_pk }}
+                            {{ comment_form.timestamp }}
+                            {{ comment_form.security_hash }}
+                            
+                            <input id="id_name" type="hidden" name="name" value="{{ user.username }}" />
+                            <input id="id_email" type="hidden" name="email" maxlength="50" value="{{ user.email }}"/>
+                            <input id="id_url" type="hidden" name="url" value="" />
+                            <textarea id="id_comment" name="comment" class="comment-area" placeholder="Leave your comment (less than 300 characters)"></textarea>
+                            <input type="submit" name="post" class="btn btn-success" value="Post Comment" disabled="disabled" />
+                            <input type="hidden" name="next" value="{{ request.path }}" />
+                        </form>
+                    {% else %}
+                        <p class="alert">You have to <a href="/user/login/">login</a> to comment.</p>
+                    {% endif %}
+
+                    {% get_comment_count for owner_profile as comment_count %}
+                    <h3>All Comments ({{ comment_count }})</h3>
+
+                    {% get_comment_list for owner_profile as comment_list %}
+                    {% paginate 5 comment_list using "compage" %}
+                    {% for comment in comment_list %}
+                    <div class="showcomment">
+                        <a href="{{ comment.user.get_absolute_url }}">{{ comment.user_name }}</a> <h4>[{{ comment.submit_date }}]<h4>
+                        <p>{{ comment.comment }}</p>
+                    </div>
+                    {% endfor %}
+                    <div class="pagination pagination-small pagination-centered"><ul>
+                        {% show_pages %}    
+                    </ul></div>
+                </div>
+    		</div>
+        </div><!-- // .row-fluid -->
+	</div><!-- // #content -->
+{% endblock %}

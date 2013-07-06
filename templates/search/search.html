@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% if query %}
+        <h2 style="text-align:center">Search results</h2>
+
+        {% for result in page.object_list %}
+            <div class="resultmovie span12">
+                <div class="row-fluid">
+                    <div class="span2">
+                        <a href="{{ result.object.get_absolute_url }}"><img src="{{ result.object.poster }}" alt="poster" title="{{ result.object.title }}" /></a>
+                    </div>
+                    <div class="span10">
+                        <p>Title: {{ result.object.title }}</p> 
+                        <p>Year: {{ result.object.year }}</p>
+                        <p>Genre: {{ result.object.genre }}</p>
+                        <p>Actors: {{ result.object.actors }}</p>
+                        <p>IMDB Rating: {{ result.object.rating }} ({{ result.object.votes }} votes)</p>
+                        <p>Plot: {{ result.object.plot }}</p>
+                        <p>Runtime: {{ result.object.runtime }}</p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="alert span12">No results found.</p>
+        {% endfor %}
+
+        {% if page.has_previous or page.has_next %}
+            <ul class="pager">
+                {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                |
+                {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+            </ul>
+        {% endif %}
+    {% else %}
+        {# Show some example queries to run, maybe query syntax, something else? #}
+    {% endif %}
+
+{% endblock %}

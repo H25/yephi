@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}YePhi | Add Movie{% endblock %}
+
+{% block content %}
+
+    {% if response %}
+        <p class="alert">{{ response }}<a href="#" class="close" data-dismiss="alert">&times;</a></p>
+    {% endif %}
+
+    <div class="well">
+        <p>Paste an IMDB link here to add a movie.</p>
+        <p>Example format: http://www.imdb.com/title/tt123456/</p>
+        <form method="post" action=".">{% csrf_token %}
+            <p><label>IMDB Link:</label><input type="text" name="link"></p>
+
+            <input type="submit" value="Submit" class="btn btn-primary"  />
+            <input type="hidden" name="next" value="{{ '/movie/add/' }}" />
+        </form>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="form-box well">
+        <h3>Sign Up to become a member of YePhi</h3>
+        <form method="post" action=".">{% csrf_token %}
+            {{ form.as_p }}
+
+            <input type="submit" class="btn btn-large btn-primary" value="{% trans 'Sign Up' %}" />
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,6 @@
+*.pyc
+search_index/*
+yephi/local_settings.py
+
+# Except gitkeep
+!*.gitkeep

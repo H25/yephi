@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load accounts_extra endless %}
+
+{% block title %}YePhi{% endblock %}
+
+{% block content %}
+
+    <div id="new-movies" class="hero-unit">
+        <a href="#" class="close">&times;</a>
+        <h2>New Movies</h2>
+        {% for movie in new_movies %}
+            <a href="{{ movie.get_absolute_url }}"><img src="{{ movie.poster }}" alt="poster" title="{{ movie.title }} (Released: {{ movie.release_date }})" class="img-polaroid" /></a>
+        {% endfor %}
+    </div>
+
+    <div class="row-fluid">
+        <div class="span4">
+            <div id="myprofile" class="row-fluid well well-small">
+                {% if user.get_profile.profile_picture %}
+                    <img src="/media/{{ user.get_profile.profile_picture }}" alt="profile picture" class="span4" />
+                {% else %}
+                    <img src="/media/images/default_user.png" alt="profile picture" class="span4" />
+                {% endif %}
+                <div class="span8">
+                    <h3>{{ user.username }}</h3>
+                    <p>Status: {{ user.get_profile.status }}</p>
+                    <p>Favorite: {{ user.get_profile.get_favlist.count }}</p>
+                    <p>Added: {{ user.get_profile.get_add_list.count }}</p>
+                    <p>Voted: {{ user.get_profile.get_vote_list.count }}</p>
+                    <p>Reviewed: {{ user.get_profile.get_review_list|length }}</p>
+
+                    <a href="{{ user.get_absolute_url }}" class="btn btn-small">Detail</a>
+                </div>
+            </div>
+            <a id="new-movies-btn" href="javascript:void(0);" class="btn btn-success">Check out the latest movies</a>
+        </div>
+
+        <div class="span8">
+            <div class="newsfeed">
+            <h2>News feed</h2>
+            {% lazy_paginate 20 feeds using "feedpage" %}
+            {% for feed in feeds %}
+                <div class="feed span12">
+                    <p>
+                        {% ifequal feed.from_user user %}
+                            You
+                        {% else %}
+                            <a href="{{ feed.from_user.get_absolute_url }}">{{ feed.from_user }}</a>
+                        {% endifequal %}
+
+                        {% if feed.action.id == 2 or feed.action.id == 4 %}
+                            {% ifequal feed.to_user user %}
+                                {{ feed.action.name|replace:'you' }}
+                            {% else %}
+                                {{ feed.action.name|replace:feed.to_user.username }}
+                            {% endifequal %}
+                        {% else %}{% if feed.action.id == 7 %}
+                            {{ feed.action.name|replace:feed.to_movie.title }}
+                            <a href="{{ feed.to_movie.get_absolute_url }}"><img src="{{ feed.to_movie.poster }}" alt="poster" title="{{ feed.to_movie.title }}" /></a>
+                        {% else %}
+                            {{ feed.action }}
+                            {% if feed.to_user %}
+                                {{ feed.to_user }}
+                            {% else %}
+                                {{ feed.to_movie }}
+                                <a href="{{ feed.to_movie.get_absolute_url }}"><img src="{{ feed.to_movie.poster }}" alt="poster" title="{{ feed.to_movie.title }}" /></a>
+                            {% endif %}
+                        {% endif %}{% endif %}
+                    </p>
+                    <p class="feedtime">{{ feed.created_at }}</p>
+                </div>
+            {% endfor %}
+            </div>
+            <div class="pagination pagination-small pagination-centered"><ul>
+                {% show_pages %}    
+            </ul></div>
+        </div>
+    </div>
+{% endblock %}

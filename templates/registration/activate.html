@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="form-box well">
+    {% if account %}
+        <p>{% trans "Your account has been successfully activated!" %}</p>
+
+        <p>{% trans "Please " %}<a href="{% url auth_login %}">{% trans "Log in" %}</a>{% trans " to continue." %}</p>
+    {% else %}
+        <p>{% trans "Account activation failed. Please try again." %}</p>
+    {% endif %}
+    </div>
+
+{% endblock %}

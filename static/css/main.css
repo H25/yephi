@@ -1,0 +1,261 @@
+/***
+ * @Author: Hieu Nguyen
+ * @Email: hieuh25@gmail.com
+ */
+
+/*--- Global ----*/
+body {
+    padding-top: 60px;
+}
+
+ul {
+    list-style: none
+}
+
+.alert-block {
+    overflow: hidden;
+}
+
+.pagination {
+    margin: 10px 0;
+}
+/*--- Layout ----*/
+
+#logo {
+    font-size: 25px;
+}
+
+#search-form {
+    padding-left: 200px;
+}
+
+#profile-pic{
+    width:148px;
+    position:relative;
+    float:left;
+    margin:10px 0;
+}
+#sidebar {
+    min-height:100px;
+    position:relative;
+    float:left;
+}
+    #side-menu {
+        width: 150px;
+        position: relative;
+        float: left;
+        margin: 10px 0 0 0;
+    }
+        #side-menu li a {
+            width: 130px;
+            display: block;
+            background: #1E9FD6;
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-bottom: 1px solid #fff;
+        }
+            #side-menu li a:hover { color:#333; }
+    
+        #side-menu p {
+            margin: 15px 0 0 0;
+        }
+        .showfriend{
+            width:150px;
+            height:40px;
+            position:relative;
+            float:left;
+            color:#1E9FD6;
+            font-size:15px;
+            text-decoration:none;
+            margin:5px 0;
+            background:#d9edf7;
+        }
+        .showfriend img{
+            width:40px;
+            height:40px;
+            position:relative;
+            float:left;
+            border:none;
+            padding-right:5px;
+        }
+
+
+#content {
+    min-height:500px;
+    position:relative;
+    float:left;
+}
+    #content #page-header {
+        width:100%;
+        overflow:hidden;
+    }
+    #content h1.name {
+        color: #08c;
+        position:relative;
+    }
+    #content h4.similar {
+        font-size:15px;
+        font-weight:normal;
+        position:relative;
+        float:left;
+    }
+    #content .fav-poster {
+        width:120px;
+        float:left;
+        border:none;
+        padding:5px;
+    }
+
+.showcomment{
+    width:100%;
+    min-height:50px;
+    border-bottom:1px solid #ccc;
+    margin:5px 0;
+}
+    .showcomment:hover{
+        background:#d9edf7;
+    }
+    .showcomment a{
+        font-size:13px;
+        color:#1E9FD6;
+        padding:5px;
+    }
+    .showcomment a:hover{
+        color:#000;
+    }
+    .showcomment h4{
+        display:inline;
+        font-size:10px;
+        font-weight:normal;
+    }
+    .showcomment p{
+        font-size:12px;
+        padding:5px;
+        word-wrap: break-word;
+    }
+
+.status {
+    background: none;
+}
+
+.vote{
+    width:100%;
+    clear:both;
+    overflow:hidden;
+    margin-bottom:5px;
+}
+
+#new-movies {
+    display: none;
+    padding: 10px !important;
+}
+    #new-movies img{
+        width: 105px;
+        border:none;
+    }
+    #new-movies h2{
+        text-align:center;
+    }
+
+.newsfeed h2 {
+    position:relative;
+    margin-top:10px;
+    text-align:center;
+}
+    
+.feed {
+    min-height:30px;
+    position:relative;
+    float:left;
+    border-bottom:1px solid #ccc;
+    text-decoration:none;
+    font-size:15px;
+    padding:5px 20px;
+}
+    .feed:hover {
+        background:#d9edf7;
+    }
+    .feed .feedtime {
+        color:#333;
+        font-size:10px;
+        float:right;
+        position:absolute;
+        right:20px;
+        bottom:5px;
+    }
+    .feed a {
+        color:#1E9FD6;
+        text-decoration:none;
+    }
+        .feed a:hover { 
+            text-decoration:underline;
+        }
+    .feed a img {
+        width:70px;
+        display:block;
+        border:none;
+        margin-top: 5px;
+    }
+
+#myprofile {
+    min-height:100px;
+    overflow:hidden;
+}
+    #myprofile img {
+        width:100px;
+    }
+
+.recommended-movies h1{
+    text-align:center;
+}
+    .recommended-movie {
+        padding:10px;
+    }
+    .recommended-movie:hover {
+        background:#d9edf7;
+    }
+    .recommended-movie img {
+        width:135px;
+        border:none;
+        float:left;
+    }
+
+.resultmovie{
+    height:250px;
+    padding:10px;
+}
+    .resultmovie:hover {
+        background:#d9edf7;
+    }
+    .resultmovie img{
+        width:165px;
+        border:none;
+    }
+
+    #recommend-btn {
+        text-align: center;
+        margin: 20px auto;
+        display: block;
+    }
+
+/*--- Forms ----*/
+.form-box label {
+    width: 200px;
+    font-size: 16px;
+    line-height: 25px;
+    float: left;
+    text-transform: capitalize;
+}
+#content textarea {
+    width: 95%;
+    height: 150px;
+    position:relative;
+    float:left;
+    margin-bottom:10px;
+}
+#vote-form {
+    overflow: hidden;
+}
+
+/*--- Responsive ----*/

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load accounts_extra %}
+
+{% block title %}YePhi | Movie list{% endblock %}
+
+{% block content %}
+    {% if movie_list %}
+        <ol>
+        {% for movie in movie_list %}
+            <li><a href="/movie/{{ movie.id }}/">{{ movie.title }}</a> - 
+            {% if user.is_authenticated %}
+                {% if user|has_in_favlist:movie %}
+                    This movie is already in your favorite list
+                {% else %}
+                    <a href="javascript:void(0);" class="js-addToFavList" id="movie{{ movie.id }}_{{ user.id }}">Add to favorite list</a>
+                    
+                {% endif %}
+            {% endif %}
+            </li>
+        {% endfor %}
+        </ol>
+    {% else %}
+        <p>No movies in database.</p>
+    {% endif %}
+{% endblock %}

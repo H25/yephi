@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}YePhi | Recommendation{% endblock %}
+
+{% block content %}
+
+    <div class="recommended-movies">
+    <h1>What to watch today?</h1>
+    {% for movie in recommended_movies %}
+        <div class="recommended-movie span12">
+            <div class="row-fluid">
+                <div class="span2">
+                    <a href="{{ movie.get_absolute_url }}"><img src="{{ movie.poster }}" alt="poster" title="{{ movie.title }}" class="img-polaroid" /></a>
+                </div>
+                <div class="span10">
+                    <p>Title: {{ movie.title }}</p> 
+                    <p>Year: {{ movie.year }}</p>
+                    <p>Genres: {{ movie.genre }}</p>
+                    <p>Rating: {{ movie.rating }} ({{ movie.votes }} votes)</p>
+                    <p>Plot: {{ movie.plot }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    <button type="button" id="recommend-btn" class="btn btn-large btn-primary" onClick="window.location.reload()">Show new recommendations</button>
+
+{% endblock %}

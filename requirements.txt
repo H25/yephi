@@ -1,0 +1,8 @@
+Django==1.4.3
+Pillow==1.7.8
+Whoosh==2.4.1
+django-endless-pagination==1.1
+django-haystack==1.2.7
+django-registration==0.7
+gunicorn==0.17.2
+psycopg2==2.5.1

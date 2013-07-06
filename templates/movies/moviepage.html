@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% load comments accounts_extra endless %}
+
+{% block title %}YePhi | {{ movie.title }}{% endblock %}
+
+{% block sidebar %}
+    <div id="sidebar" class="span2">
+        <img src="{{ movie.poster }}" alt="{{ movie.title }}" id="profile-pic" class="thumbnail" />
+        
+        <div id="side-menu">
+            {% if user.is_authenticated %}
+                {% if user|has_in_favlist:movie %}
+                    <p class="alert alert-success">This movie is already in your favorite list</p>
+                {% else %}
+                    <a href="javascript:void(0);" class="js-addToFavList btn btn-block btn-primary" id="movie_{{ movie.id }}_{{ user.id }}">Add to favorite list</a>
+                {% endif %}
+            {% endif %}
+
+            <p>People who like this movie ({{ favusers.count }})</p>
+            {% if favusers %}
+                {% lazy_paginate 10 favusers using "favupage" %}
+                {% for fav in favusers %}
+                    <a href="{{ fav.user.get_absolute_url }}" class="showfriend">
+                        {% if fav.user.get_profile.profile_picture %}
+                            <img src="/media/{{ fav.user.get_profile.profile_picture }}" alt="profile picture" />
+                        {% else %}
+                            <img src="/media/images/default_user.png" alt="profile picture" />
+                        {% endif %}
+                        {{ fav.user.username }}
+                    </a>
+                {% endfor %}
+                {% get_pages %}
+                <div class="pagination pagination-mini"><ul>
+                    {{ pages.previous }}{{ pages.next }}        
+                </ul></div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="content" class="span10">
+        <div id="page-header">
+            <h1 class="name">{{ movie.title }}</h1>
+        </div>
+
+        <div class="row-fluid">
+            <div class="alert alert-block alert-info span6">
+                <h2>Information</h2>
+                <p>Year: {{ movie.year }}</p>
+                <p>Genre:  {{ movie.genre }}</p>
+                <p>IMDB Rating: {{ movie.rating }} (total votes: {{ movie.votes }})</p>
+                <p>Actors: {{ movie.actors }}</p>
+                <p>Plot: {{ movie.plot }}</p>
+                <p>Runtime: {{ movie.runtime }}</p>
+                <p>IMDB Link: <a href="http://www.imdb.com/title/{{ movie.imdbid }}/">http://www.imdb.com/title/{{ movie.imdbid }}/</a></p>
+                <p>Added by: <a href="{{ movie.added_by.get_absolute_url }}">{{ movie.added_by.username }}</a></p>
+                {% if avg_rate %}<p>Yephi rating: <span class="badge badge-success">{{ avg_rate }}</span> ({{ total_votes }} votes)</p>{% endif %}
+            </div>
+
+            <div class="span6">
+                <div class="well">
+                    <h2>Votes</h2>
+                    {% if avg_rate %}<p>Current Yephi rating: {{ avg_rate }} ({{ total_votes }} votes)</p>{% endif %}
+                    {% if user.is_authenticated %}
+                        {% if user_voted %}
+                            <p class="alert alert-success">You have voted {% with thisvote=user_voted|first %} {{ thisvote.rate }} {% endwith %}stars for this movie. You may change your vote below:</p>
+                        {% endif %}
+                        <form id="vote-form">
+                            <div id="stars_{{ movie.id }}_{{ user.id }}" class="js-starsVoting">
+                                <input type="radio" name="newrate" value="1" title="Very poor" />
+                                <input type="radio" name="newrate" value="2" title="Poor" />
+                                <input type="radio" name="newrate" value="3" title="Not that bad" />
+                                <input type="radio" name="newrate" value="4" title="Fair" />
+                                <input type="radio" name="newrate" value="5" title="Average" />
+                                <input type="radio" name="newrate" value="6" title="Almost good" />
+                                <input type="radio" name="newrate" value="7" title="Good" />
+                                <input type="radio" name="newrate" value="8" title="Very good" />
+                                <input type="radio" name="newrate" value="9" title="Excellent" />
+                                <input type="radio" name="newrate" value="10" title="Perfect" />
+                            </div>
+                        </form>
+                    {% else %}
+                        <p class="alert ">You have to <a href="/user/login/">login</a> to vote for this movie.</p>
+                    {% endif %}
+                </div>
+                
+                <div class="well">
+                    <h2>Reviews</h2>
+                    {% if user.is_authenticated %}
+                        {% if user|has_reviewed:movie %}
+                            <div class="alert alert-success">
+                                <p>You have reviewed this movie. Your previous review:</p>
+                                <p>"{{ user|get_review:movie }}"</p>
+                                <a href="#js-editReviewModal" role="button" class="btn btn-small" data-toggle="modal">Edit your review</a>
+                            </div>
+                            <div id="js-editReviewModal" class="modal hide fade">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    <h3>Edit your review</h3>
+                                </div>
+                                {% get_comment_form for movie as review_form %}
+                                <form id="review_{{ movie.id }}_{{ user.id }}" class="js-submitReviewForm" action="{{ '/movie/editreview/' }}" method="post">
+                                    <div class="modal-body">
+                                        {% csrf_token %}
+                                            {{ review_form.content_type }}
+                                            {{ review_form.object_pk }}
+                                            {{ review_form.timestamp }}
+                                            {{ review_form.security_hash }}
+                                            
+                                            <input id="id_name" type="hidden" name="name" value="{{ user.username }}" />
+                                            <input id="id_email" type="hidden" name="email" maxlength="50" value="{{ user.email }}"/>
+                                            <input id="id_url" type="hidden" name="url" value="" />
+                                            <textarea id="id_comment" name="comment" class="review-area">{{ user|get_review:movie }}</textarea>
+
+                                            <input type="hidden" name="next" value="{{ request.path }}" />
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                                        <input type="submit" name="post" class="btn btn-primary" value="Save changes" disabled="disabled" />
+                                    </div>
+                                </form>
+                            </div>
+                        {% else %}
+                            {% get_comment_form for movie as review_form %}
+                            <form id="review_{{ movie.id }}_{{ user.id }}" class="js-submitReviewForm" action="{% comment_form_target %}" method="post">{% csrf_token %}
+                                {{ review_form.content_type }}
+                                {{ review_form.object_pk }}
+                                {{ review_form.timestamp }}
+                                {{ review_form.security_hash }}
+                                
+                                <input id="id_name" type="hidden" name="name" value="{{ user.username }}" />
+                                <input id="id_email" type="hidden" name="email" maxlength="50" value="{{ user.email }}"/>
+                                <input id="id_url" type="hidden" name="url" value="" />
+                                <textarea id="id_comment" name="comment" class="review-area" placeholder="Write a short review about this movie (less than 300 characters)"></textarea>
+                                
+                                <input type="submit" name="post" class="btn btn-success" value="Post" disabled="disabled" />
+                                <input type="hidden" name="next" value="{{ request.path }}" />
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <p class="alert">You have to <a href="/user/login/">login</a> to write a review.</p>
+                    {% endif %}
+
+                    {% get_comment_count for movie as review_count %}
+
+                    <h3>[{{ review_count }} reviews]</h3>
+
+                    {% get_comment_list for movie as review_list %}
+                    {% paginate 5 review_list %}
+                        {% for review in review_list %}
+                        <div class="showcomment">
+                            <a href="{{ review.user.get_absolute_url }}">{{ review.user_name }}</a> <h4>[{{ review.submit_date }}]<h4>
+                            <p>{{ review.comment }}</p>
+                        </div>
+                        {% endfor %}
+                    <div class="pagination pagination-small pagination-centered"><ul>
+                        {% show_pages %}
+                    </ul></div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+{% endblock %}

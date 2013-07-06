@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+    {% if not user.is_authenticated %}
+        <div class="form-box well">
+            <h3 class="header">{% trans "Login" %}</h3>
+        	<form method="post" action=".">{% csrf_token %}
+        	    {{ form.as_p }}
+
+                <input type="hidden" name="next" value="{% url user_profile %}" />
+        	    <input type="submit" class="btn btn-large btn-primary" value="{% trans 'Log in' %}" />
+        	</form>
+
+        	<small>{% trans "Forgot password" %}? <a href="{% url auth_password_reset %}">{% trans "Reset password" %}</a></small><br />
+        	<small>{% trans "Not member" %}? <a href="{% url registration_register %}">{% trans "Sign Up Now" %}</a></small>
+        </div>
+    {% endif %}
+
+{% endblock %}

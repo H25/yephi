@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="form-box well">
+        <form method="post" action="." enctype="multipart/form-data">
+            {% csrf_token %}
+            <p><label>Profile Picture:</label>{{ form.profile_picture }}</p>
+            {% for field in form %}
+                {% if field.name != 'profile_picture' %}
+                    <p><label>{{ field.label }}:</label> {{ field }}</p>
+                {% endif %}
+            {% endfor %}
+
+            <input type="submit" class="btn btn-success" value="{% trans 'Save' %}" />
+        </form>
+    </div>
+{% endblock %}
